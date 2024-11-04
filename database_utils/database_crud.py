@@ -1,39 +1,48 @@
-from sqlalchemy import create_engine, Column, Integer, String, Sequence, inspect
-from sqlalchemy.orm import sessionmaker, declarative_base
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, relationship
+from models import Policyholder, Policy, Claim
 
 #define the database connection
-DATABASE_URL = "postgresql://postgres:buddy2701@localhost:5432/DBdemo"
+DATABASE_URL = "postgresql://postgres:buddy2701@localhost:5432/auto_insurance"
 
 # Create an engine instance
 engine = create_engine(DATABASE_URL)
 
-# Create a base class for declarative models
-Base = declarative_base()
 
-# Define the User class
-class User(Base):
-    __tablename__ = 'UserDemo.user'
-    id = Column(Integer, Sequence('user_id_seq'), primary_key=True)
-    name = Column(String(50))
-    age = Column(Integer)
 
-    def __repr__(self):
-        return f"<User(name='{self.name}', age={self.age})>"
+Policyholder.policies = relationship("Policy", order_by=Policy.policy_id, back_populates="policyholder")
 
-# Check if the table already exists and create if it doesn't
-if not inspect(engine).has_table(User.__tablename__):
-    Base.metadata.create_all(engine)
-else:
-    print("Table already exists.")
+
+
+Policy.claims = relationship("Claim", order_by=Claim.claim_id, back_populates="policy")
 
 # Create a session
 Session = sessionmaker(bind=engine)
 session = Session()
 
-# Example of adding a new user
-new_user = User(name='John Doe', age=30)
-session.add(new_user)
-session.commit()
+# Query the data
+def get_all_policyholders():
+    return session.query(Policyholder).all()
 
-# Close the session
+def get_all_policies():
+    return session.query(Policy).all()
+
+def get_all_claims():
+    return session.query(Claim).all()
+
+# Example usage: Fetch and print all data from the policyholders, policies, and claims tables
+policyholders = get_all_policyholders()
+for policyholder in policyholders:
+    print(f"Policyholder: {policyholder.first_name} {policyholder.last_name}, Email: {policyholder.email}")
+
+policies = get_all_policies()
+for policy in policies:
+    print(f"Policy: {policy.policy_number}, Type: {policy.policy_type}, Premium: {policy.premium_amount}")
+
+claims = get_all_claims()
+for claim in claims:
+    print(f"Claim ID: {claim.claim_id}, Date: {claim.claim_date}, Amount: {claim.claim_amount}, Status: {claim.status}")
+
+# Close the session when done
 session.close()

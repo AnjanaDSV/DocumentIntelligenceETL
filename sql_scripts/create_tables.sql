@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS auto_policies.policies (
     end_date DATE,
     premium_amount NUMERIC(10, 2)
 );
-
+--
 -- Step 3: Create the claims table
 CREATE TABLE IF NOT EXISTS auto_policies.claims (
     claim_id SERIAL PRIMARY KEY,
@@ -28,3 +28,4 @@ CREATE TABLE IF NOT EXISTS auto_policies.claims (
     claim_amount NUMERIC(10, 2),
     status VARCHAR(20)
 );
+
