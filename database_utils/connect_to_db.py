@@ -1,15 +1,18 @@
 import asyncpg
+import os
+from dotenv import load_dotenv
+
+load_dotenv()  # Load environment variables from .env file
 
 async def connect_to_local_db():
     """
-    this function is to connect to local database
+    This function is to connect to the local database using environment variables.
     """   
-    # Connect to the PostgreSQL database
     connection = await asyncpg.connect(
-        user='postgres',        
-        password='buddy2701',      
-        database='auto_insurance',      
-        host='localhost',           
-        port='5432'                    
+        user=os.getenv('DB_USER'),        
+        password=os.getenv('DB_PASSWORD'),      
+        database=os.getenv('DB_NAME'),      
+        host=os.getenv('DB_HOST'),           
+        port=os.getenv('DB_PORT')                    
     )
     return connection
