@@ -28,7 +28,7 @@ class RetrieveData:
 async def main():
     etl = RetrieveData()
     try:
-        raw_docs = await etl.extract_documents(query="SELECT policyholder_id, first_name, last_name, date_of_birth, email, phone, address FROM auto_policies.policyholders;")
+        raw_docs = await etl.extract_documents(query="SELECT policyholder_id, first_name, last_name, date_of_birth, email, phone_number, address FROM auto_policies.policyholders;")
         print(raw_docs)
     finally:
         await etl.close_connection()
