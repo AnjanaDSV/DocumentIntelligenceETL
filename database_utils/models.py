@@ -7,7 +7,7 @@ async def get_policyholders():
     """
     connection = await connect_to_local_db()
     query = """
-        SELECT policyholder_id, first_name, last_name, date_of_birth, email, phone_number, address
+        SELECT policyholder_id, first_name, last_name, date_of_birth, email, phone, address
         FROM auto_policies.policyholders
     """
     try:
