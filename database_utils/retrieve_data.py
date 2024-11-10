@@ -1,5 +1,6 @@
 import asyncio
 from connect_to_db import connect_to_local_db
+from models import get_policyholders
 
 class RetrieveData:
     def __init__(self):
@@ -28,8 +29,17 @@ class RetrieveData:
 async def main():
     etl = RetrieveData()
     try:
-        raw_docs = await etl.extract_documents(query="SELECT policyholder_id, first_name, last_name, date_of_birth, email, phone_number, address FROM auto_policies.policyholders;")
-        print(raw_docs)
+        # Fetch policyholders data from the database
+        policyholders = await get_policyholders()
+        
+        # Print each policyholder's data in a concise format
+        if policyholders:
+            for policyholder in policyholders:
+                print(policyholder)  
+        else:
+            print("No policyholders found.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
     finally:
         await etl.close_connection()
 
